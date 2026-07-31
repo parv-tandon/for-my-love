@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday 💌</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+        }
+        .handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        /* Envelope Animations */
+        .envelope-flap {
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out, z-index 0.2s;
+        }
+        .envelope-open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+        .letter-content {
+            transform: translateY(100%);
+            transition: transform 1s ease-in-out;
+        }
+        .envelope-open .letter-content {
+            transform: translateY(-50px);
+            z-index: 20;
+        }
+
+        /* Floating Hearts Animation */
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+        }
+        .floating-heart {
+            position: fixed;
+            color: #ff7eb3;
+            animation: floatUp 8s linear infinite;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Card Flip */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fce7f3;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f472b6;
+            border-radius: 4px;
+        }
+
+        /* Page transition reveal (matches the overlay color used on the home page) */
+        #page-transition-in {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            background: linear-gradient(135deg, #fce7f3 0%, #fda4c0 55%, #f472b6 100%);
+            clip-path: circle(150% at 50% 50%);
+            transition: clip-path 0.7s cubic-bezier(.65, 0, .35, 1);
+        }
+        #page-transition-in.revealed {
+            clip-path: circle(0% at 50% 50%);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #page-transition-in { transition: none; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-red-50 to-pink-200 min-h-screen relative">
+
+    <!-- Page Transition Reveal -->
+    <div id="page-transition-in"></div>
+
+    <!-- Floating Hearts Background -->
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+
+    <!-- PAGE 1: THE ENVELOPE (Landing) -->
+    <div id="page-envelope" class="fixed inset-0 flex flex-col items-center justify-center z-40 transition-opacity duration-1000">
+        <h1 class="text-3xl md:text-5xl text-pink-600 handwriting font-bold mb-8 animate-bounce">Happiest Birthday My Love</h1>
+        
+        <div class="relative w-72 h-48 md:w-96 md:h-64 cursor-pointer group" onclick="openEnvelope()">
+            <!-- Envelope Back -->
+            <div class="absolute inset-0 bg-pink-300 rounded-b-xl shadow-2xl z-0"></div>
+            
+            <!-- Letter Preview (Hidden initially) -->
+            <div class="absolute left-4 right-4 bottom-4 top-12 bg-white shadow-sm rounded-lg transition-all duration-700 z-10 group-hover:-translate-y-4">
+                <div class="p-4">
+                    <div class="h-2 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div class="h-2 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div class="h-2 bg-gray-200 rounded w-5/6"></div>
+                </div>
+            </div>
+
+            <!-- Envelope Body (Front) -->
+            <div class="absolute inset-0 z-20 pointer-events-none">
+                <div class="absolute bottom-0 w-full h-full border-l-[144px] md:border-l-[192px] border-l-transparent border-b-[96px] md:border-b-[128px] border-b-pink-400 border-r-[144px] md:border-r-[192px] border-r-transparent rounded-b-xl"></div>
+            </div>
+
+            <!-- Envelope Flap (Top) -->
+            <div id="flap" class="envelope-flap absolute top-0 w-full h-0 border-l-[144px] md:border-l-[192px] border-l-transparent border-t-[96px] md:border-t-[128px] border-t-pink-500 border-r-[144px] md:border-r-[192px] border-r-transparent z-30 origin-top"></div>
+            
+            <!-- Seal -->
+            <div id="seal" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white shadow-md border-2 border-red-700 transition-all duration-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </div>
+        </div>
+        <p class="mt-12 text-gray-500 text-sm animate-pulse">Tap the envelope to open</p>
+    </div>
+
+    <!-- PAGE 2: MAIN CONTENT (Hidden initially) -->
+    <div id="page-content" class="hidden opacity-0 transition-opacity duration-1000 min-h-screen pb-20">
+        
+        <!-- Music Player Header -->
+        <nav class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-pink-100 px-6 py-3 flex justify-between items-center shadow-sm">
+            <!-- AUDIO ELEMENT ADDED HERE -->
+            <!-- Make sure you have a file named "song.mp3" in the same folder as this HTML file -->
+            <audio id="bg-music" loop>
+                <source src="song.mp3" type="audio/mpeg">
+            </audio>
+
+            <a href="../index.html" class="p-2 rounded-full bg-pink-100 hover:bg-pink-200 text-pink-600 transition" title="Back home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+            </a>
+
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white animate-spin-slow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Now Playing</p>
+                    <p class="text-sm font-bold text-pink-600">Ik Kudi by Parv for Sindu</p>
+                </div>
+            </div>
+            <button onclick="toggleMusic()" class="p-2 rounded-full bg-pink-100 hover:bg-pink-200 text-pink-600 transition">
+               <span id="play-icon">▶</span>
+            </button>
+        </nav>
+
+        <main class="max-w-3xl mx-auto px-4 pt-8 space-y-12">
+            
+            <!-- The Letter Section -->
+            <section class="bg-white p-8 md:p-12 rounded-lg shadow-xl transform -rotate-1 mx-auto relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-pink-500 to-yellow-400"></div>
+                
+                <h2 class="text-4xl font-bold handwriting text-pink-600 mb-6 text-center">Dearest Wifey,</h2>
+                
+                <div class="prose prose-pink text-lg text-gray-700 leading-relaxed space-y-4">
+                    <p>
+                        I wanted to do something a little different to tell you how much you mean to me.
+                        Words often fail me when I look at you, but I'll try my best here.
+                    </p>
+                    <p>
+                        Every moment with you feels like a beautiful dream I never want to wake up from.
+                        I never imagined I would find a love like this, someone who would complete me the way you do.
+                    </p>
+                    <p>
+                        Thank you for being my partner, my best friend, and my love, always and forever ♾️.
+                    </p>
+                </div>
+
+                <div class="mt-8 text-right">
+                    <p class="text-lg font-semibold">Forever Yours,</p>
+                    <p class="handwriting text-3xl text-pink-600 mt-2">Parv</p>
+                </div>
+            </section>
+
+            <!-- Photo Grid / Memory Lane -->
+            <section class="space-y-6">
+                <h3 class="text-2xl font-bold text-center text-gray-800">You and Me</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <!-- Placeholder 1 -->
+                    <div class="aspect-square bg-pink-200 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition relative group">
+                        <!-- TO USER: Replace the src below with a URL to your photo -->
+                        <img src="IMG_1160.jpg" alt="Memory 1" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <p class="text-white font-bold">My Fav: Our First Concert ❤️</p>
+                        </div>
+                    </div>
+                    <!-- Placeholder 2 -->
+                    <div class="aspect-square bg-pink-300 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition relative group md:mt-8">
+                        <img src="IMG_1162.jpg" alt="Memory 2" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <p class="text-white font-bold">Mine 😋</p>
+                        </div>
+                    </div>
+                    <!-- Placeholder 3 -->
+                    <div class="aspect-square bg-pink-400 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition relative group">
+                        <img src="IMG_0073.jpg" alt="Memory 3" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <p class="text-white font-bold">My Goofy Girl 😝</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interactive: 4 Reasons Why -->
+            <section class="py-8">
+                <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">Things I Love About You</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Card 1 -->
+                    <div class="h-40 group perspective-1000 cursor-pointer" onclick="flipCard(this)">
+                        <div class="relative h-full w-full transition-all duration-500 transform-style-3d">
+                            <div class="absolute inset-0 h-full w-full bg-white rounded-xl shadow-md flex items-center justify-center backface-hidden">
+                                <span class="text-pink-500 font-bold text-xl">Click Me ❤️</span>
+                            </div>
+                            <div class="absolute inset-0 h-full w-full bg-gradient-to-br from-pink-500 to-red-500 text-white rounded-xl shadow-md rotate-y-180 backface-hidden flex items-center justify-center p-4 text-center">
+                                <p class="font-semibold">How you make my day go from 0 to 100 real quick</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="h-40 group perspective-1000 cursor-pointer" onclick="flipCard(this)">
+                        <div class="relative h-full w-full transition-all duration-500 transform-style-3d">
+                            <div class="absolute inset-0 h-full w-full bg-white rounded-xl shadow-md flex items-center justify-center backface-hidden">
+                                <span class="text-pink-500 font-bold text-xl">Click Me 🥵</span>
+                            </div>
+                            <div class="absolute inset-0 h-full w-full bg-gradient-to-br from-pink-500 to-red-500 text-white rounded-xl shadow-md rotate-y-180 backface-hidden flex items-center justify-center p-4 text-center">
+                                <p class="font-semibold">How you can turn me on instanly and your curves (iykwim)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="h-40 group perspective-1000 cursor-pointer" onclick="flipCard(this)">
+                        <div class="relative h-full w-full transition-all duration-500 transform-style-3d">
+                            <div class="absolute inset-0 h-full w-full bg-white rounded-xl shadow-md flex items-center justify-center backface-hidden">
+                                <span class="text-pink-500 font-bold text-xl">Click Me 💕</span>
+                            </div>
+                            <div class="absolute inset-0 h-full w-full bg-gradient-to-br from-pink-500 to-red-500 text-white rounded-xl shadow-md rotate-y-180 backface-hidden flex items-center justify-center p-4 text-center">
+                                <p class="font-semibold">The way you you look at me with those pretty eyes and wonderful smile</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="h-40 group perspective-1000 cursor-pointer" onclick="flipCard(this)">
+                        <div class="relative h-full w-full transition-all duration-500 transform-style-3d">
+                            <div class="absolute inset-0 h-full w-full bg-white rounded-xl shadow-md flex items-center justify-center backface-hidden">
+                                <span class="text-pink-500 font-bold text-xl">Click Me 🤡</span>
+                            </div>
+                            <div class="absolute inset-0 h-full w-full bg-gradient-to-br from-pink-500 to-red-500 text-white rounded-xl shadow-md rotate-y-180 backface-hidden flex items-center justify-center p-4 text-center">
+                                <p class="font-semibold">How you go on and on yapping (Please don't ever stop)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final Call to Action -->
+            <div class="text-center py-12">
+                <p class="text-lg mb-6 text-gray-600">One last thing...</p>
+                <button onclick="celebrate()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-8 rounded-full shadow-lg transform transition hover:scale-110 animate-bounce">
+                    I Love You!
+                </button>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- Reveal transition on arrival ---
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.getElementById('page-transition-in').classList.add('revealed');
+        }));
+
+        // --- Particle/Heart System ---
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            
+            document.getElementById('hearts-container').appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 8000);
+        }
+
+        setInterval(createHeart, 500);
+
+        // --- Envelope Interaction ---
+        function openEnvelope() {
+            const flap = document.getElementById('flap');
+            const seal = document.getElementById('seal');
+            const pageEnvelope = document.getElementById('page-envelope');
+            const pageContent = document.getElementById('page-content');
+
+            // Animate Flap and Seal
+            flap.style.transform = 'rotateX(180deg)';
+            flap.style.zIndex = '0';
+            seal.style.opacity = '0';
+            
+            // Wait for flap animation, then fade out envelope page and show content
+            setTimeout(() => {
+                pageEnvelope.style.opacity = '0';
+                setTimeout(() => {
+                    pageEnvelope.style.display = 'none';
+                    pageContent.classList.remove('hidden');
+                    // Force reflow
+                    void pageContent.offsetWidth; 
+                    pageContent.style.opacity = '1';
+                    window.scrollTo(0, 0);
+                }, 1000);
+            }, 600);
+        }
+
+        // --- Card Flip Interaction ---
+        function flipCard(card) {
+            const inner = card.querySelector('.transform-style-3d');
+            if (inner.style.transform === 'rotateY(180deg)') {
+                inner.style.transform = 'rotateY(0deg)';
+            } else {
+                inner.style.transform = 'rotateY(180deg)';
+            }
+        }
+
+        // --- Music Toggle ---
+        function toggleMusic() {
+            const music = document.getElementById('bg-music');
+            const btn = document.getElementById('play-icon');
+            
+            if (music.paused) {
+                music.play();
+                btn.textContent = '⏸';
+            } else {
+                music.pause();
+                btn.textContent = '▶';
+            }
+        }
+
+        // --- Celebration Explosion ---
+        function celebrate() {
+            for(let i=0; i<100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.innerHTML = ['❤️', '💖', '🌹', '💋', '🥰'][Math.floor(Math.random() * 5)];
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = '50%';
+                    confetti.style.top = '50%';
+                    confetti.style.fontSize = (Math.random() * 30 + 10) + 'px';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.transform = `translate(-50%, -50%)`;
+                    confetti.style.transition = 'all 1s ease-out';
+                    confetti.style.zIndex = '100';
+                    
+                    document.body.appendChild(confetti);
+
+                    // Explode direction
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = Math.random() * 300 + 100;
+                    const tx = Math.cos(angle) * velocity;
+                    const ty = Math.sin(angle) * velocity;
+
+                    requestAnimationFrame(() => {
+                        confetti.style.transform = `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`;
+                        confetti.style.opacity = '0';
+                    });
+
+                    setTimeout(() => confetti.remove(), 1000);
+                }, i * 10);
+            }
+        }
+    </script>
+</body>
+</html>
