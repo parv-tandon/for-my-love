@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Girlfriend's Day 💐</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600;800&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+        }
+        .handwriting {
+            font-family: 'Caveat', cursive;
+        }
+        .serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Aged coffee-stain paper background (provided image) */
+        .corkboard {
+            background-color: #a9743f;
+            background-image: url("Aged Coffee Stain Paper.jpeg");
+            background-size: cover;
+            background-position: center top;
+            background-attachment: fixed;
+        }
+
+        /* Spiral notebook binding */
+        .notebook-rings {
+            position: absolute;
+            top: 14px;
+            bottom: 14px;
+            left: 12px;
+            width: 18px;
+            background-image:
+                radial-gradient(circle at 35% 35%, rgba(255,255,255,0.55) 0 1.5px, transparent 2.5px),
+                radial-gradient(circle at 50% 50%, #2a1a0e 0 4.5px, transparent 5.5px);
+            background-size: 18px 24px, 18px 24px;
+            background-repeat: repeat-y, repeat-y;
+            background-position: center top, center top;
+            opacity: 0.9;
+        }
+        .notebook-rings::before,
+        .notebook-rings::after {
+            content: '';
+            position: absolute;
+            top: -14px;
+            bottom: -14px;
+            left: -6px;
+            width: 1px;
+            background: rgba(0,0,0,0.12);
+        }
+        .notebook-rings::after {
+            left: auto;
+            right: -6px;
+        }
+
+        /* Cover / album */
+        #cover-page {
+            transition: opacity 0.8s ease;
+        }
+        .album {
+            transition: transform 0.9s cubic-bezier(.6,-0.2,.3,1.4), opacity 0.7s ease;
+            transform-origin: left center;
+        }
+        .album.opening {
+            transform: rotateY(-100deg) scale(0.9);
+            opacity: 0;
+        }
+
+        /* Polaroids */
+        .polaroid {
+            background: #fdfcf8;
+            padding: 14px 14px 68px 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+        .polaroid:hover {
+            transform: scale(1.06) rotate(0deg) !important;
+            box-shadow: 0 18px 35px rgba(0,0,0,0.4);
+            z-index: 20;
+        }
+        .washi-tape {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            width: 70px;
+            height: 26px;
+            background: rgba(212, 165, 116, 0.85);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+        }
+
+        /* Falling petals */
+        @keyframes petalFall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0.7; }
+        }
+        .petal {
+            position: fixed;
+            top: 0;
+            pointer-events: none;
+            z-index: 40;
+            animation: petalFall linear forwards;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e8d5b5; }
+        ::-webkit-scrollbar-thumb { background: #b9834a; border-radius: 4px; }
+
+        /* Page transition reveal (matches the overlay color used on the home page) */
+        #page-transition-in {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            background: linear-gradient(135deg, #d8b98a 0%, #a9743f 55%, #6b4226 100%);
+            clip-path: circle(150% at 50% 50%);
+            transition: clip-path 0.7s cubic-bezier(.65, 0, .35, 1);
+        }
+        #page-transition-in.revealed {
+            clip-path: circle(0% at 50% 50%);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #page-transition-in { transition: none; }
+        }
+    </style>
+</head>
+<body class="corkboard min-h-screen relative">
+
+    <!-- Page Transition Reveal -->
+    <div id="page-transition-in"></div>
+
+    <!-- PAGE 1: THE ALBUM COVER (Landing) -->
+    <div id="cover-page" class="fixed inset-0 flex flex-col items-center justify-center z-40 px-6">
+        <h1 class="text-3xl md:text-5xl text-[#4a2f1a] handwriting font-bold mb-8 text-center drop-shadow-sm">Happy Girlfriend's Day</h1>
+
+        <div style="perspective: 1200px;">
+            <div class="album relative w-64 h-80 md:w-80 md:h-96 cursor-pointer" onclick="openAlbum()">
+                <div class="absolute inset-0 rounded-md shadow-2xl" style="background: linear-gradient(135deg, #6b4226, #8a5a34 45%, #6b4226); border: 6px solid #4a2f1a;">
+                    <div class="absolute inset-4 border-2 border-[#d8b98a]/40 rounded-sm flex flex-col items-center justify-center gap-3 text-center pl-6 pr-4" style="margin-left: 20px;">
+                        <span class="text-4xl">📖</span>
+                        <p class="handwriting text-2xl md:text-3xl text-[#f3e3c8]">Our Little Scrapbook</p>
+                        <p class="serif italic text-sm text-[#d8b98a]">A few reasons you're my favorite person</p>
+                    </div>
+                    <!-- Spiral notebook binding -->
+                    <div class="notebook-rings"></div>
+                </div>
+            </div>
+        </div>
+        <p class="mt-10 text-[#4a2f1a]/70 text-sm animate-pulse">Tap the album to open</p>
+    </div>
+
+    <!-- PAGE 2: MAIN CONTENT (Hidden initially) -->
+    <div id="page-content" class="hidden opacity-0 transition-opacity duration-1000 min-h-screen pb-20">
+
+        <!-- Music Player Header -->
+        <nav class="sticky top-0 z-30 bg-[#f3e3c8]/90 backdrop-blur-md border-b border-[#b9834a]/30 px-6 py-3 flex justify-between items-center shadow-sm">
+            <audio id="bg-music" loop>
+                <source src="song.mp3" type="audio/mpeg">
+            </audio>
+
+            <a href="../index.html" class="p-2 rounded-full bg-[#e8d5b5] hover:bg-[#dcc296] text-[#6b4226] transition" title="Back home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+            </a>
+
+            <div class="flex items-center gap-2">
+                <div id="vinyl" class="w-8 h-8 rounded-full flex items-center justify-center text-white" style="background: repeating-radial-gradient(circle, #3a2416 0 3px, #6b4226 3px 6px);">
+                </div>
+                <div>
+                    <p class="text-xs text-[#8a5a34]">Now Playing</p>
+                    <p class="text-sm font-bold text-[#6b4226]">Mental Manadhil — A.R. Rahman & Jonita Gandhi</p>
+                </div>
+            </div>
+            <button onclick="toggleMusic()" class="p-2 rounded-full bg-[#e8d5b5] hover:bg-[#dcc296] text-[#6b4226] transition">
+               <span id="play-icon">▶</span>
+            </button>
+        </nav>
+
+        <main class="max-w-3xl mx-auto px-4 pt-10 space-y-16">
+
+            <!-- The Letter Section -->
+            <section class="bg-[#fdfcf8] p-8 md:p-12 rounded-sm shadow-xl transform rotate-1 mx-auto relative" style="box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                <div class="washi-tape"></div>
+                <h2 class="text-3xl md:text-4xl font-bold handwriting text-[#6b4226] mb-6 text-center">My Love,</h2>
+                <div class="serif text-lg text-[#3a2416] leading-relaxed space-y-4 italic">
+                    <p>
+                        Today isn't about cake (although I wouldn't mind your cake) or candles (wouldn't mind giving you my candle) — it's just about you. About how lucky I am to call you mine,
+                        to be the one who gets your good mornings and your bad days, your silly jokes and your quiet or loud moments (even though I love there are no quite ones).
+                    </p>
+                    <p>
+                        Being your boyfriend is easily the best job I've ever had (Being your Husband would be even easier). I Love You more than the whole world.
+                    </p>
+                </div>
+                <div class="mt-8 text-right not-italic">
+                    <p class="text-lg font-semibold text-[#3a2416]">Always yours,</p>
+                    <p class="handwriting text-3xl text-[#6b4226] mt-1">Parv</p>
+                </div>
+            </section>
+
+            <!-- Polaroid Scrapbook -->
+            <section>
+                <h3 class="text-2xl md:text-3xl font-bold text-center handwriting text-[#4a2f1a] mb-10">A Few Reasons You're My Favorite Person</h3>
+                <div id="scrapbook" class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-14 max-w-2xl mx-auto place-items-center"></div>
+            </section>
+
+            <!-- Finale: Bouquet -->
+            <section class="text-center py-10">
+                <p class="serif italic font-semibold text-lg text-[#3a2416] mb-6" style="text-shadow: 0 1px 3px rgba(255,255,255,0.5);">One last little something...</p>
+                <div class="relative inline-block">
+                    <img src="bouquet.png" alt="A bouquet for you"
+                         class="mx-auto rounded-lg shadow-2xl max-w-xs w-full"
+                         onerror="this.style.display='none'; document.getElementById('bouquet-fallback').style.display='flex';">
+                    <div id="bouquet-fallback" class="hidden w-64 h-64 mx-auto rounded-lg bg-[#fdfcf8] shadow-2xl items-center justify-center text-8xl">
+                        💐
+                    </div>
+                </div>
+                <p class="handwriting text-3xl text-[#6b4226] mt-6">Happy Girlfriend's Day, my love.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- Reveal transition on arrival ---
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.getElementById('page-transition-in').classList.add('revealed');
+        }));
+
+        // --- Photos & Captions ---
+        const memories = [
+            { src: '197c6095-8ab6-4e21-a985-b94fa05dd554.JPG', caption: 'My favorite hello, every time.' },
+            { src: '47240953-17ee-4b67-9ecd-0d2eb2482a34.JPG', caption: 'The one who puts up with me 😄' },
+            { src: 'IMG_1901.jpg', caption: 'Still the prettiest girl in every room' },
+            { src: 'b70f1066-159f-471b-a7e6-9e3eb2c7fdd9.JPG', caption: 'My person, my favorite chaos' },
+            { src: 'dad95514-3c60-4a84-bbd2-170872f3dc28.JPG', caption: 'Yours today, tomorrow, always' },
+            { src: 'A30E91C2-B18B-497E-A62B-CE46EEE82AC2.JPG', caption: 'Caught you being adorable, as always' }
+        ];
+        const tilts = [-8, 5, -3, 7, -5, 6];
+
+        function renderScrapbook() {
+            const container = document.getElementById('scrapbook');
+            container.innerHTML = memories.map((m, i) => `
+                <div class="polaroid relative" style="transform: rotate(${tilts[i % tilts.length]}deg);">
+                    <div class="washi-tape"></div>
+                    <img src="${m.src}" alt="Memory ${i + 1}" class="w-36 h-36 md:w-40 md:h-40 object-cover">
+                    <p class="handwriting text-lg leading-snug text-[#3a2416] text-center absolute bottom-3 left-0 right-0 px-2">${m.caption}</p>
+                </div>
+            `).join('');
+        }
+        renderScrapbook();
+
+        // --- Album Opening ---
+        function openAlbum() {
+            const album = document.querySelector('.album');
+            const coverPage = document.getElementById('cover-page');
+            const pageContent = document.getElementById('page-content');
+
+            album.classList.add('opening');
+
+            setTimeout(() => {
+                coverPage.style.opacity = '0';
+                setTimeout(() => {
+                    coverPage.style.display = 'none';
+                    pageContent.classList.remove('hidden');
+                    void pageContent.offsetWidth;
+                    pageContent.style.opacity = '1';
+                    window.scrollTo(0, 0);
+                }, 800);
+            }, 500);
+        }
+
+        // --- Music Toggle ---
+        function toggleMusic() {
+            const music = document.getElementById('bg-music');
+            const btn = document.getElementById('play-icon');
+            const vinyl = document.getElementById('vinyl');
+
+            if (music.paused) {
+                music.play();
+                btn.textContent = '⏸';
+                vinyl.style.animation = 'spin 2.5s linear infinite';
+            } else {
+                music.pause();
+                btn.textContent = '▶';
+                vinyl.style.animation = 'none';
+            }
+        }
+
+        // --- Falling Petals ---
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.textContent = ['🌸', '🌺', '💮'][Math.floor(Math.random() * 3)];
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.fontSize = (Math.random() * 14 + 12) + 'px';
+            petal.style.animationDuration = (Math.random() * 6 + 8) + 's';
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 14000);
+        }
+        setInterval(createPetal, 1200);
+    </script>
+
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>
